@@ -1,20 +1,7 @@
-import os from "node:os";
 import "./load-env.js";
 import { createApp } from "./app.js";
 import { config } from "./config.js";
-
-function firstLanIPv4() {
-  const nets = os.networkInterfaces();
-  for (const name of Object.keys(nets)) {
-    for (const net of nets[name] || []) {
-      const v4 = net.family === "IPv4" || net.family === 4;
-      if (v4 && !net.internal) {
-        return net.address;
-      }
-    }
-  }
-  return null;
-}
+import { firstLanIPv4 } from "./lib/net-info.js";
 
 if (!process.env.SPOTIFY_CLIENT_ID) {
   console.warn(
@@ -30,15 +17,17 @@ const app = createApp();
 
 const server = app.listen(config.port, config.host, () => {
   const base = `http://127.0.0.1:${config.port}`;
-  console.log(`Spotify OBS overlay server (${config.host})`);
-  console.log(`  This PC:    ${base}/`);
-  console.log(`  Overlay:    ${base}/overlay/?safe=1`);
+  console.log(`Spotify OBS overlay server (bind: ${config.host})`);
+  console.log(`  Dashboard:  ${base}/`);
+  console.log(`  OBS (same PC): ${base}/overlay/?safe=1`);
   if (config.host === "0.0.0.0") {
     const lan = firstLanIPv4();
     if (lan) {
-      console.log(`  Other PC (OBS Browser URL): http://${lan}:${config.port}/overlay/?safe=1`);
-      console.log(`  (Server PC must stay on; same Wi‑Fi/LAN as the gaming PC.)`);
+      console.log(`  OBS (other device on LAN): http://${lan}:${config.port}/overlay/?safe=1`);
+    } else {
+      console.log(`  (No LAN IPv4 found — connect Wi‑Fi/Ethernet to get a link for other devices.)`);
     }
+    console.log(`  Lock to this Mac only: set HOST=127.0.0.1 in .env`);
   }
 });
 
@@ -51,7 +40,7 @@ server.on("error", (err) => {
         `  macOS: lsof -i :${config.port}   then: kill <PID>\n` +
         (config.host === "0.0.0.0"
           ? ""
-          : `  To listen on your LAN (another PC’s OBS), set HOST=0.0.0.0 in .env\n`)
+          : `  To allow OBS on another PC on Wi‑Fi, set HOST=0.0.0.0 in .env (default).\n`)
     );
   } else {
     console.error(err);

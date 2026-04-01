@@ -23,12 +23,32 @@
       </section>
 
       <section class="card">
-        <h2>2. Overlay URL (OBS Browser Source)</h2>
-        <p class="hint">Use this address. Customize with query parameters (see README).</p>
+        <h2>2. OBS Browser Source URLs</h2>
+        <p class="hint">Keep <code>?safe=1</code> for OBS. Server must stay running.</p>
+
+        <h3 class="url-label">Same computer (OBS on this Mac)</h3>
         <div class="url-box">
-          <code id="overlay-url"></code>
-          <button type="button" class="btn ghost" id="copy-btn">Copy</button>
+          <code id="overlay-local"></code>
+          <button type="button" class="btn ghost" id="copy-local">Copy</button>
         </div>
+
+        <div id="lan-wrap" hidden>
+          <h3 class="url-label">Another device (gaming PC, same Wi‑Fi)</h3>
+          <div class="url-box">
+            <code id="overlay-lan"></code>
+            <button type="button" class="btn ghost" id="copy-lan">Copy</button>
+          </div>
+          <p class="hint">
+            If it won’t load, allow inbound TCP port <strong id="port-hint">3847</strong> in this Mac’s
+            <strong>Firewall</strong> (System Settings → Network → Firewall → Options).
+          </p>
+        </div>
+
+        <p id="lan-locked" class="hint warn" hidden>
+          Server is bound to <code>127.0.0.1</code> only. To use OBS on another computer, set
+          <code>HOST=0.0.0.0</code> in <code>.env</code> (or remove <code>HOST</code>), save, and restart
+          <code>npm start</code>.
+        </p>
       </section>
 
       <section class="card muted">

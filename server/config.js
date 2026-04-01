@@ -7,8 +7,8 @@ const rootDir = path.join(__dirname, "..");
 export const config = {
   rootDir,
   port: Number(process.env.PORT) || 3847,
-  /** `127.0.0.1` = this machine only. `0.0.0.0` = LAN (so another PC’s OBS can open the overlay). */
-  host: (process.env.HOST || "127.0.0.1").trim() || "127.0.0.1",
+  /** `0.0.0.0` = this machine + LAN (OBS on another PC). `127.0.0.1` = this machine only. */
+  host: (process.env.HOST || "0.0.0.0").trim() || "0.0.0.0",
   clientId: process.env.SPOTIFY_CLIENT_ID || "",
   clientSecret: process.env.SPOTIFY_CLIENT_SECRET || "",
   redirectUri: process.env.SPOTIFY_REDIRECT_URI || "http://127.0.0.1:3847/auth/callback",

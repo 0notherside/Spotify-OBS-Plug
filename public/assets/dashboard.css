@@ -72,6 +72,22 @@ body {
   color: rgba(255, 255, 255, 0.55) !important;
 }
 
+.hint.warn {
+  color: #fbbf24 !important;
+  margin-top: 14px !important;
+}
+
+.url-label {
+  margin: 18px 0 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.url-label:first-of-type {
+  margin-top: 0;
+}
+
 .status {
   font-weight: 500;
   margin-bottom: 14px !important;

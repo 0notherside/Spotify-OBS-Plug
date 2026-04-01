@@ -1,4 +1,6 @@
 import express from "express";
+import { config } from "../config.js";
+import { firstLanIPv4 } from "../lib/net-info.js";
 import { fetchCurrentlyPlaying } from "../lib/spotify-api.js";
 import { getValidAccessToken } from "../lib/token-service.js";
 
@@ -42,6 +44,21 @@ router.get("/status", async (req, res) => {
   res.json({
     connected: tokenResult.ok,
     reason: tokenResult.ok ? undefined : tokenResult.reason,
+  });
+});
+
+/** Overlay URLs for OBS: same machine vs another device on LAN */
+router.get("/urls", (req, res) => {
+  const { port, host } = config;
+  const suffix = "/overlay/?safe=1";
+  const localhost = `http://127.0.0.1:${port}${suffix}`;
+  const lanIp = host === "0.0.0.0" ? firstLanIPv4() : null;
+  res.json({
+    bind: host,
+    port,
+    localhostOverlay: localhost,
+    lanOverlay: lanIp ? `http://${lanIp}:${port}${suffix}` : null,
+    lanIp,
   });
 });
 

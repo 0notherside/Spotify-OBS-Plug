@@ -9,7 +9,7 @@ Local **Node.js + Express** server that connects to the **Spotify Web API** (OAu
 ├── .env.example          # Copy to .env
 ├── README.md
 ├── server/
-│   ├── index.js          # HTTP entry (binds 127.0.0.1)
+│   ├── index.js          # HTTP entry (binds 0.0.0.0 by default for LAN + local)
 │   ├── app.js            # Express app wiring
 │   ├── config.js         # Env + paths
 │   ├── lib/
@@ -92,21 +92,18 @@ npm run dev
 
 **Note:** The server must be running while you stream.
 
-### Two PCs: dev PC runs the server, gaming PC runs OBS
+### Two PCs: server on one Mac/PC, OBS on another (gaming PC)
 
-By default the app listens on **127.0.0.1**, so **only that computer** can open the overlay. **`http://127.0.0.1:3847` on the gaming PC is the gaming PC itself**, not your other machine — it will not show this project unless the server runs there too.
+By default the app listens on **`0.0.0.0`**, so **this machine and other devices on your Wi‑Fi** can open the overlay.
 
-**What works:**
+- **`http://127.0.0.1:3847` on the gaming PC** only talks to the gaming PC itself — for **external OBS**, use the **server machine’s LAN IP** (shown on the dashboard and in the terminal).
+- **Spotify login:** open the dashboard on the server PC at **`http://127.0.0.1:3847/`** (or `http://<server-ip>:3847/` from another browser on the LAN) and sign in once.
+- **OBS on the gaming PC:** copy the **“Another device”** URL from the dashboard, or use  
+  **`http://<SERVER_LAN_IP>:3847/overlay/?safe=1`**
+- Allow **inbound TCP** on **`PORT`** (default **3847**) on the **server** in macOS **Firewall** if the gaming PC cannot load the page.
+- To **disable LAN access** (this Mac only), set **`HOST=127.0.0.1`** in `.env` and restart.
 
-1. Run **`npm start` on the PC that should host the app** (often the same gaming PC for simplicity).
-2. **Spotify login** (`/auth/login`) only needs to happen on a browser on a machine that can reach that server — usually the server PC at `http://127.0.0.1:3847/`.
-3. To load the overlay **from another PC on the same network** (OBS on the gaming PC, Node on a second PC):
-   - On the **server PC**, set in `.env`: **`HOST=0.0.0.0`** (listen on all interfaces), restart the server.
-   - Allow **inbound TCP** on **`PORT`** (default **3847**) in that PC’s firewall.
-   - On the **gaming PC**, set the Browser Source URL to **`http://<SERVER_PC_LAN_IP>:3847/overlay/?safe=1`** (the terminal prints a hint when `HOST=0.0.0.0`).
-   - Both PCs must be on the **same LAN**; the server PC must stay on while you stream.
-
-**Easiest setup:** install Node on the **gaming PC**, clone/copy the project, use `.env` there, run `npm start` on that PC, and use **`http://127.0.0.1:3847/overlay/?safe=1`** in OBS on the same machine — no LAN routing needed.
+**Same-machine setup:** run `npm start` on the PC where OBS runs and use **`http://127.0.0.1:3847/overlay/?safe=1`** in Browser Source.
 
 ## 5. Overlay URL parameters
 
@@ -131,8 +128,7 @@ Example:
 
 ## 7. Security notes
 
-- With the default **`HOST=127.0.0.1`**, the server is only reachable on **this machine**.
-- With **`HOST=0.0.0.0`**, any device on your **LAN** can open the dashboard and overlay — use only on **trusted home networks** (or add your own firewall rules).
+- Default **`HOST=0.0.0.0`** lets any device on your **LAN** open the dashboard and overlay — use on **trusted home networks** only (or set **`HOST=127.0.0.1`** to restrict to this machine).
 - **Do not** commit `.env` or `data/tokens.json`.
 - For production or remote access you would add HTTPS, secrets management, and a proper session model; this project is aimed at **local OBS** use.
 
