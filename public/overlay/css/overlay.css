@@ -1,0 +1,331 @@
+/* Liquid glass / frosted panel — tuned for OBS Browser Source (transparent page) */
+
+:root {
+  --ui-scale: 1;
+  --accent: #1db954;
+  --glass-tint: rgba(18, 28, 22, 0.45);
+  --glass-highlight: rgba(255, 255, 255, 0.14);
+  --text-primary: rgba(255, 255, 255, 0.96);
+  --text-muted: rgba(255, 255, 255, 0.58);
+  --radius: 20px;
+  --blur: 28px;
+  font-size: calc(16px * var(--ui-scale));
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+  background: transparent !important;
+  color: var(--text-primary);
+  font-family: "SF Pro Display", "SF Pro Text", system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Center the card in the Browser Source box so it’s easy to find in OBS preview */
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+.widget {
+  display: inline-block;
+  padding: 12px;
+  filter: drop-shadow(0 18px 48px rgba(0, 0, 0, 0.45));
+  max-width: 100%;
+}
+
+.widget[data-state="idle"] .glass,
+.widget[data-state="paused"] .glass {
+  opacity: 0.88;
+}
+
+.widget[data-state="error"] .glass {
+  opacity: 0.95;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+/* —— Glass shell —— */
+.glass {
+  position: relative;
+  min-width: min(92vw, 22rem);
+  max-width: 26rem;
+  padding: 1rem 1.1rem 1rem 1rem;
+  border-radius: var(--radius);
+  overflow: hidden;
+
+  /* Solid base layer so the panel stays visible in OBS (CEF often breaks backdrop-filter on transparent pages) */
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.22) 0%,
+      rgba(255, 255, 255, 0.04) 42%,
+      rgba(255, 255, 255, 0.08) 100%
+    ),
+    var(--glass-tint),
+    rgb(18, 20, 24);
+
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.12),
+    0 12px 40px rgba(0, 0, 0, 0.35);
+
+  backdrop-filter: blur(var(--blur)) saturate(1.85);
+  -webkit-backdrop-filter: blur(var(--blur)) saturate(1.85);
+}
+
+/* Use in OBS if the glass is still invisible: ?safe=1 */
+html.obs-safe .glass {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Noise grain */
+.glass__noise {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  opacity: 0.14;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='256' height='256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+}
+
+/* Liquid shimmer sweep */
+.glass__shimmer {
+  pointer-events: none;
+  position: absolute;
+  inset: -40% -30%;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 38%,
+    rgba(255, 255, 255, 0.09) 48%,
+    rgba(255, 255, 255, 0.22) 50%,
+    rgba(255, 255, 255, 0.08) 52%,
+    transparent 62%,
+    transparent 100%
+  );
+  animation: shimmer 7s ease-in-out infinite;
+  mix-blend-mode: soft-light;
+}
+
+/* Specular rim */
+.glass__specular {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+      120% 80% at 10% 0%,
+      rgba(255, 255, 255, 0.28),
+      transparent 55%
+    ),
+    radial-gradient(80% 60% at 92% 8%, rgba(255, 255, 255, 0.12), transparent 45%);
+  opacity: 0.55;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-18%) translateY(4%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(12%) translateY(-2%) rotate(0deg);
+  }
+  100% {
+    transform: translateX(-18%) translateY(4%) rotate(0deg);
+  }
+}
+
+.glass__inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 0.85rem 1rem;
+  align-items: center;
+  z-index: 1;
+}
+
+/* Album art */
+.cover {
+  position: relative;
+  width: 7rem;
+  height: 7rem;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.cover__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cover__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.12), rgba(0, 0, 0, 0.25));
+}
+
+.cover__glyph {
+  font-size: 2rem;
+  opacity: 0.45;
+}
+
+/* Text */
+.info {
+  min-width: 0;
+}
+
+.titles {
+  margin-bottom: 0.55rem;
+}
+
+.track-name {
+  margin: 0 0 0.2rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-primary);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.35);
+}
+
+.artist-name {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.titles--flash {
+  animation: title-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes title-pop {
+  0% {
+    opacity: 0.35;
+    transform: translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Progress */
+.progress-block {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.progress {
+  position: relative;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
+}
+
+.progress__fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), var(--accent));
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.2);
+  transition: width 0.12s linear;
+}
+
+.progress__glow {
+  position: absolute;
+  left: 0;
+  top: -2px;
+  height: 9px;
+  width: 0%;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 0% 50%,
+    rgba(255, 255, 255, 0.35),
+    transparent 70%
+  );
+  opacity: 0.45;
+  filter: blur(4px);
+  pointer-events: none;
+}
+
+.times {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-muted);
+}
+
+/* Badges */
+.badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 2;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+}
+
+.badge--paused {
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.badge--error {
+  background: rgba(127, 29, 29, 0.55);
+  color: #fecaca;
+  max-width: 11rem;
+  line-height: 1.25;
+  text-transform: none;
+  font-weight: 600;
+  font-size: 0.65rem;
+}
+
+/* Light theme: stronger readable text on bright glass */
+.theme-light .glass {
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.06),
+    0 12px 40px rgba(0, 0, 0, 0.12);
+}

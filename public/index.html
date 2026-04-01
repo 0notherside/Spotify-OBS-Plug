@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Spotify OBS Overlay — Setup</title>
+    <link rel="stylesheet" href="/assets/dashboard.css" />
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <h1>Spotify OBS Overlay</h1>
+        <p class="lede">
+          Connect your Spotify account, then add the overlay URL to OBS as a
+          <strong>Browser Source</strong>.
+        </p>
+      </header>
+
+      <section class="card">
+        <h2>1. Connect Spotify</h2>
+        <p id="status-line" class="status">Checking connection…</p>
+        <a class="btn primary" href="/auth/login">Sign in with Spotify</a>
+      </section>
+
+      <section class="card">
+        <h2>2. Overlay URL (OBS Browser Source)</h2>
+        <p class="hint">Use this address. Customize with query parameters (see README).</p>
+        <div class="url-box">
+          <code id="overlay-url"></code>
+          <button type="button" class="btn ghost" id="copy-btn">Copy</button>
+        </div>
+      </section>
+
+      <section class="card muted">
+        <h2>Requirements</h2>
+        <ul>
+          <li>Node.js 18+</li>
+          <li>Spotify app credentials in <code>.env</code></li>
+          <li>Redirect URI must match Spotify Dashboard and <code>.env</code></li>
+        </ul>
+      </section>
+    </div>
+    <script src="/assets/dashboard.js" type="module"></script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Now Playing</title>
+    <link rel="stylesheet" href="css/overlay.css" />
+  </head>
+  <body>
+    <div class="widget" id="widget" data-state="loading">
+      <div class="glass" aria-live="polite">
+        <div class="glass__noise" aria-hidden="true"></div>
+        <div class="glass__shimmer" aria-hidden="true"></div>
+        <div class="glass__specular" aria-hidden="true"></div>
+
+        <div class="glass__inner">
+          <div class="cover">
+            <img class="cover__img" id="cover-img" alt="" width="112" height="112" hidden />
+            <div class="cover__placeholder" id="cover-ph">
+              <span class="cover__glyph">♪</span>
+            </div>
+          </div>
+
+          <div class="info">
+            <div class="titles" id="titles">
+              <h1 class="track-name" id="track-name">Connecting…</h1>
+              <p class="artist-name" id="artist-name">Spotify</p>
+            </div>
+
+            <div class="progress-block">
+              <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progress">
+                <div class="progress__fill" id="progress-fill"></div>
+                <div class="progress__glow" id="progress-glow"></div>
+              </div>
+              <div class="times">
+                <span id="time-current">0:00</span>
+                <span id="time-total">0:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="badge badge--paused" id="badge-paused" hidden>Paused</div>
+        <div class="badge badge--error" id="badge-error" hidden></div>
+      </div>
+    </div>
+
+    <script src="js/main.js" type="module"></script>
+  </body>
+</html>
