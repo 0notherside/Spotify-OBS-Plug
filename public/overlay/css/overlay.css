@@ -102,25 +102,6 @@ html.obs-safe .glass {
   background-size: 180px 180px;
 }
 
-/* Liquid shimmer sweep */
-.glass__shimmer {
-  pointer-events: none;
-  position: absolute;
-  inset: -40% -30%;
-  background: linear-gradient(
-    115deg,
-    transparent 0%,
-    transparent 38%,
-    rgba(255, 255, 255, 0.076) 48%,
-    rgba(255, 255, 255, 0.187) 50%,
-    rgba(255, 255, 255, 0.068) 52%,
-    transparent 62%,
-    transparent 100%
-  );
-  animation: shimmer 7s ease-in-out infinite;
-  mix-blend-mode: soft-light;
-}
-
 /* Specular rim */
 .glass__specular {
   pointer-events: none;
@@ -134,18 +115,6 @@ html.obs-safe .glass {
     ),
     radial-gradient(80% 60% at 92% 8%, rgba(255, 255, 255, 0.1), transparent 45%);
   opacity: 0.47;
-}
-
-@keyframes shimmer {
-  0% {
-    transform: translateX(-18%) translateY(4%) rotate(0deg);
-  }
-  50% {
-    transform: translateX(12%) translateY(-2%) rotate(0deg);
-  }
-  100% {
-    transform: translateX(-18%) translateY(4%) rotate(0deg);
-  }
 }
 
 .glass__inner {
